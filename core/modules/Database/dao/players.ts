@@ -27,7 +27,8 @@ export default class PlayersDao {
      * Searches for a player in the database by the user, returns null if not found or false in case of error
      */
     findOne(user: string): DatabasePlayerType | null {
-        if (!/[0-9A-Fa-f]{40}/.test(user)) {
+        if (!/^[a-zA-Z0-9]{1,30}$/.test(user)) {
+        // if (!/[0-9A-Fa-f]{40}/.test(user)) {
             throw new Error('Invalid reference type');
         }
 
