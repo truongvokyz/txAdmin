@@ -7,7 +7,7 @@ const packageJson = JSON.parse(fs.readFileSync('./package-lock.json', 'utf8'));
 const licenseUsage = new Map();
 let packagesWithLicense = Object.keys(packageJson.packages).length;
 for (const [packageName, packageData] of Object.entries(packageJson.packages)) {
-    const licenseName = packageData.license;
+    const licenseName = packageData.user;
     if (!licenseName) {
         packagesWithLicense--;
         console.log(chalk.yellow('No license found for package: ') + packageName);
@@ -20,9 +20,9 @@ for (const [packageName, packageData] of Object.entries(packageJson.packages)) {
 console.group(chalk.green(`--- Detected Licenses (${packagesWithLicense}) ---`));
 const sortedLicenseUsage = [...licenseUsage.entries()]
     .sort((a, b) => a[0] - b[0]);
-for (const [license, count] of sortedLicenseUsage) {
+for (const [user, count] of sortedLicenseUsage) {
     console.log(
-        license ? `${license}: ` : chalk.red('unknown: '),
+        user ? `${user}: ` : chalk.red('unknown: '),
         chalk.yellow(count)
     );
 }

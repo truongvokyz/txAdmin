@@ -9,8 +9,8 @@ import { useOpenConfirmDialog, useOpenPromptDialog } from "@/hooks/dialogs";
 const InvisibleNewLine = () => <span className="opacity-0">{'\n'}</span>;
 
 const placeholderIds = [
-    'fivem:xxxxxxx',
-    'license:xxxxxxxxxxxxxx',
+    'citizenid:xxxxxxx',
+    'user:xxxxxxxxxxxxxx',
     'discord:xxxxxxxxxxxxxxxxxx',
     'etc...',
 ].join('\n');
@@ -74,7 +74,7 @@ export default function MultiIdsList({ list, highlighted, type, src, onWipeIds }
 
     const handleWipeIds = () => {
         if (!onWipeIds) return;
-        const target = isHwids ? `${typeStr}s` : `${typeStr}s (except license)`;
+        const target = isHwids ? `${typeStr}s` : `${typeStr}s (except user)`;
         openConfirmDialog({
             title: `Wipe ${src} ${typeStr}s`,
             message: <p>
@@ -170,7 +170,7 @@ export default function MultiIdsList({ list, highlighted, type, src, onWipeIds }
                 ) : (
                     <>
                         {onWipeIds && (
-                            <button onClick={handleWipeIds} title="Wipe all IDs except license.">
+                            <button onClick={handleWipeIds} title="Wipe all IDs except user.">
                                 <Trash2Icon className="h-5 opacity-50 hover:opacity-100 hover:text-destructive" />
                             </button>
                         )}

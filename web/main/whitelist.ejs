@@ -295,7 +295,7 @@
             newNode.innerHTML = reqElements.entryTemplate.innerHTML;
             newNode.querySelector('td:nth-child(1)').textContent = req.id;
             newNode.querySelector('td:nth-child(2)').textContent = req.playerDisplayName;
-            newNode.querySelector('td:nth-child(2)').title = `${req.playerDisplayName}\nlicense:${req.license}`;
+            newNode.querySelector('td:nth-child(2)').title = `${req.playerDisplayName}\nlicense:${req.user}`;
             newNode.querySelector('td:nth-child(3)').title = req.discordTag;
             newNode.querySelector('td:nth-child(3) div img').src = req.discordAvatar
                 ? req.discordAvatar
@@ -546,7 +546,7 @@
 
     async function addApproval(){
         //TODO: when migrating to react, get this from the shared folder
-        const acceptedIdTypes = ['discord', 'fivem', 'license', 'license2', 'live', 'steam', 'xbl'];
+        const acceptedIdTypes = ['discord', 'user', 'citizenid'];
         let identifier = await txAdminPrompt({
             modalColor: 'green',
             confirmBtnClass: 'btn-green',

@@ -20,7 +20,7 @@ export class BasePlayer {
     pureName: string = 'unknown';
     ids: string[] = [];
     hwids: string[] = [];
-    license: null | string = null; //extracted for convenience
+    user: null | string = null; //extracted for convenience
     dbData: false | DatabasePlayerType = false;
     isConnected: boolean = false;
 
@@ -31,8 +31,8 @@ export class BasePlayer {
      * FIXME: if this is called for a disconnected ServerPlayer, it will not clean after 120s
      */
     protected mutateDbData(srcData: object) {
-        if (!this.license) throw new Error(`cannot mutate database for a player that has no license`);
-        this.dbData = txCore.database.players.update(this.license, srcData, this.uniqueId);
+        if (!this.user) throw new Error(`cannot mutate database for a player that has no user`);
+        this.dbData = txCore.database.players.update(this.user, srcData, this.uniqueId);
     }
 
     /**
@@ -60,7 +60,7 @@ export class BasePlayer {
     /**
      * Returns all actions related to all available ids
      * NOTE: theoretically ServerPlayer.setupDatabaseData() guarantees that DatabasePlayer.dbData.ids array
-     *  will contain the license but may be better to also explicitly add it to the array here?
+     *  will contain the user but may be better to also explicitly add it to the array here?
      */
     getHistory() {
         if (!this.ids.length) return [];
@@ -75,7 +75,7 @@ export class BasePlayer {
      * NOTE: Techinically, we should be checking this.isRegistered, but not available in BasePlayer
      */
     setNote(text: string, author: string) {
-        if (!this.license) throw new Error(`cannot save notes for a player that has no license`);
+        if (!this.user) throw new Error(`cannot save notes for a player that has no user`);
         this.mutateDbData({
             notes: {
                 text,
@@ -90,7 +90,7 @@ export class BasePlayer {
      * NOTE: Techinically, we should be checking this.isRegistered, but not available in BasePlayer
      */
     setWhitelist(enabled: boolean) {
-        if (!this.license) throw new Error(`cannot set whitelist status for a player that has no license`);
+        if (!this.user) throw new Error(`cannot set whitelist status for a player that has no user`);
         this.mutateDbData({
             tsWhitelisted: enabled ? now() : undefined,
         });
@@ -100,7 +100,7 @@ export class BasePlayer {
             return this.ids.includes(x.identifier);
         }
         txCore.database.whitelist.removeManyApprovals(allIdsFilter);
-        txCore.database.whitelist.removeManyRequests({ license: this.license });
+        txCore.database.whitelist.removeManyRequests({ user: this.user });
     }
 }
 
@@ -145,7 +145,7 @@ export class ServerPlayer extends BasePlayer {
         //Processing identifiers
         //NOTE: ignoring IP completely
         const { validIdsArray, validIdsObject } = parsePlayerIds(playerData.ids);
-        this.license = validIdsObject.license;
+        this.user = validIdsObject.user;
         this.ids = validIdsArray;
         this.hwids = playerData.hwids.filter(x => {
             return typeof x === 'string' && consts.regexValidHwidToken.test(x);
@@ -157,7 +157,7 @@ export class ServerPlayer extends BasePlayer {
         this.pureName = pureName;
 
         //If this player is eligible to be on the database
-        if (this.license) {
+        if (this.user) {
             this.#setupDatabaseData();
             this.isRegistered = !!this.dbData;
             this.#minuteCronInterval = setInterval(this.#minuteCron.bind(this), 60_000);
@@ -169,10 +169,10 @@ export class ServerPlayer extends BasePlayer {
 
     /**
      * Registers or retrieves the player data from the database.
-     * NOTE: if player has license, we are guaranteeing license will be added to the database ids array
+     * NOTE: if player has user, we are guaranteeing user will be added to the database ids array
      */
     #setupDatabaseData() {
-        if (!this.license || !this.isConnected) return;
+        if (!this.user || !this.isConnected) return;
 
         //Make sure the database is ready - this should be impossible
         if (!txCore.database.isReady) {
@@ -182,7 +182,7 @@ export class ServerPlayer extends BasePlayer {
 
         //Check if player is already on the database
         try {
-            const dbPlayer = txCore.database.players.findOne(this.license);
+            const dbPlayer = txCore.database.players.findOne(this.user);
             if (dbPlayer) {
                 //Updates database data
                 this.dbData = dbPlayer;
@@ -196,7 +196,7 @@ export class ServerPlayer extends BasePlayer {
             } else {
                 //Register player to the database
                 const toRegister = {
-                    license: this.license,
+                    user: this.user,
                     ids: this.ids,
                     hwids: this.hwids,
                     displayName: this.displayName,
@@ -242,7 +242,7 @@ export class ServerPlayer extends BasePlayer {
     /**
      * Sets the dbData.
      * Used when some other player instance mutates the database and we need to sync all players 
-     * with the same license.
+     * with the same user.
      */
     syncUpstreamDbData(srcData: DatabasePlayerType) {
         this.dbData = cloneDeep(srcData)
@@ -257,8 +257,8 @@ export class ServerPlayer extends BasePlayer {
     getDbData() {
         if (this.dbData) {
             return cloneDeep(this.dbData);
-        } else if (this.license && this.isRegistered) {
-            const dbPlayer = txCore.database.players.findOne(this.license);
+        } else if (this.user && this.isRegistered) {
+            const dbPlayer = txCore.database.players.findOne(this.user);
             if (!dbPlayer) return false;
 
             this.dbData = dbPlayer;
@@ -324,17 +324,17 @@ export class ServerPlayer extends BasePlayer {
 export class DatabasePlayer extends BasePlayer {
     readonly isRegistered = true; //no need to check because otherwise constructor throws
 
-    constructor(license: string, srcPlayerData?: DatabasePlayerType) {
-        super(Symbol(`db${license}`));
-        if (typeof license !== 'string') {
-            throw new Error(`invalid player license`);
+    constructor(user: string, srcPlayerData?: DatabasePlayerType) {
+        super(Symbol(`db${user}`));
+        if (typeof user !== 'string') {
+            throw new Error(`invalid player user`);
         }
 
         //Set dbData either from constructor params, or from querying the database
         if (srcPlayerData) {
             this.dbData = srcPlayerData;
         } else {
-            const foundData = txCore.database.players.findOne(license);
+            const foundData = txCore.database.players.findOne(user);
             if (!foundData) {
                 throw new Error(`player not found in database`);
             } else {
@@ -343,7 +343,7 @@ export class DatabasePlayer extends BasePlayer {
         }
 
         //fill in data
-        this.license = license;
+        this.user = user;
         this.ids = this.dbData.ids;
         this.hwids = this.dbData.hwids;
         this.displayName = this.dbData.displayName;

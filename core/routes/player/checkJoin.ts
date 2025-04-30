@@ -208,8 +208,8 @@ function checkBan(
         if (activeBans.length > 1) {
             note += `<br>${textKeys.note_multiple_bans}`;
         }
-        const bannedLicense = ban.ids.find(id => id.startsWith('license:'));
-        if (bannedLicense && validIdsObject.license && bannedLicense.substring(8) !== validIdsObject.license) {
+        const bannedLicense = ban.ids.find(id => id.startsWith('user:'));
+        if (bannedLicense && validIdsObject.user && bannedLicense.substring(8) !== validIdsObject.user) {
             note += `<br>${textKeys.note_diff_license}`;
         }
 
@@ -262,7 +262,7 @@ async function checkAdminOnlyMode(
     };
 
     //Check if fivem/discord ids are available
-    if (!validIdsObject.license && !validIdsObject.discord) {
+    if (!validIdsObject.user && !validIdsObject.discord) {
         return {
             allow: false,
             reason: rejectMessageTemplate(
@@ -400,7 +400,7 @@ async function checkDiscordRoles(
 
 
 /**
- * Checks if the player has a whitelisted license
+ * Checks if the player has a whitelisted user
  */
 async function checkApprovedLicense(
     validIdsArray: string[],
@@ -415,8 +415,8 @@ async function checkApprovedLicense(
         request_id_label: txCore.translator.t('whitelist_messages.approved_license.request_id_label'),
     };
 
-    //Check if license is available
-    if (!validIdsObject.license) {
+    //Check if user is available
+    if (!validIdsObject.user) {
         return {
             allow: false,
             reason: rejectMessageTemplate(
@@ -429,7 +429,7 @@ async function checkApprovedLicense(
     //Finding the player and checking if already whitelisted
     let player;
     try {
-        player = playerResolver(null, null, validIdsObject.license);
+        player = playerResolver(null, null, validIdsObject.user);
         const dbData = player.getDbData();
         if (dbData && dbData.tsWhitelisted) {
             return { allow: true };
@@ -440,18 +440,18 @@ async function checkApprovedLicense(
     const { displayName, pureName } = cleanPlayerName(playerName);
     const ts = now();
 
-    //Searching for the license/discord on whitelistApprovals
+    //Searching for the user/discord on whitelistApprovals
     const allIdsFilter = (x: DatabaseWhitelistApprovalsType) => {
         return validIdsArray.includes(x.identifier);
     }
     const approvals = txCore.database.whitelist.findManyApprovals(allIdsFilter);
     if (approvals.length) {
         //update or register player
-        if (typeof player !== 'undefined' && player.license) {
+        if (typeof player !== 'undefined' && player.user) {
             player.setWhitelist(true);
         } else {
             txCore.database.players.register({
-                license: validIdsObject.license,
+                user: validIdsObject.user,
                 ids: validIdsArray,
                 hwids: validHwidsArray,
                 displayName,
@@ -465,7 +465,7 @@ async function checkApprovedLicense(
 
         //Remove entries from whitelistApprovals & whitelistRequests
         txCore.database.whitelist.removeManyApprovals(allIdsFilter);
-        txCore.database.whitelist.removeManyRequests({ license: validIdsObject.license });
+        txCore.database.whitelist.removeManyRequests({ user: validIdsObject.user });
 
         //return allow join
         return { allow: true };
@@ -486,10 +486,10 @@ async function checkApprovedLicense(
     //Check if this player has an active wl request
     //NOTE: it could return multiple, but we are not dealing with it
     let wlRequestId: string;
-    const requests = txCore.database.whitelist.findManyRequests({ license: validIdsObject.license });
+    const requests = txCore.database.whitelist.findManyRequests({ user: validIdsObject.user });
     if (requests.length) {
         wlRequestId = requests[0].id; //just getting the first
-        txCore.database.whitelist.updateRequest(validIdsObject.license, {
+        txCore.database.whitelist.updateRequest(validIdsObject.user, {
             playerDisplayName: displayName,
             playerPureName: pureName,
             discordTag,
@@ -498,7 +498,7 @@ async function checkApprovedLicense(
         });
     } else {
         wlRequestId = txCore.database.whitelist.registerRequest({
-            license: validIdsObject.license,
+            user: validIdsObject.user,
             playerDisplayName: displayName,
             playerPureName: pureName,
             discordTag,
@@ -509,7 +509,7 @@ async function checkApprovedLicense(
             action: 'requested',
             playerName: displayName,
             requestId: wlRequestId,
-            license: validIdsObject.license,
+            user: validIdsObject.user,
         });
     }
 

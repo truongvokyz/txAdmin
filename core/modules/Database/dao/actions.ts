@@ -41,7 +41,7 @@ export default class ActionsDao {
 
     /**
      * Searches for any registered action in the database by a list of identifiers and optional filters
-     * Usage example: findMany(['license:xxx'], undefined, {type: 'ban', revocation.timestamp: null})
+     * Usage example: findMany(['user:xxx'], undefined, {type: 'ban', revocation.timestamp: null})
      */
     findMany<T extends DatabaseActionType>(
         idsArray: string[],

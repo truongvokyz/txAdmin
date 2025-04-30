@@ -89,8 +89,8 @@ export default function AddLegacyBanPage() {
             <div className="px-2 md:px-0">
                 <h1 className="text-3xl mb-2">Ban Identifiers</h1>
                 <p>
-                    Here you can ban specific player identifiers (like <InlineCode>license</InlineCode> and <InlineCode>discord</InlineCode>) without having to search for a registered player.<br />
-                    Bans without a single <InlineCode>license</InlineCode> identifier are considered <em>Legacy Bans</em> and should be avoided if possible. <br />
+                    Here you can ban specific player identifiers (like <InlineCode>user</InlineCode> and <InlineCode>discord</InlineCode>) without having to search for a registered player.<br />
+                    Bans without a single <InlineCode>user</InlineCode> identifier are considered <em>Legacy Bans</em> and should be avoided if possible. <br />
                     {!canBan ? (
                         <span className="text-warning-inline">
                             You need the <InlineCode className="text-warning-inline">Player: Ban</InlineCode> permission to use this feature.
@@ -107,7 +107,7 @@ export default function AddLegacyBanPage() {
                         ref={idsTextareaRef}
                         className="h-full"
                         disabled={isSaving || !canBan}
-                        placeholder="discord:xxxx, fivem:xxxx, license:xxxx, steam:xxxx, etc..."
+                        placeholder="discord:xxxx, citizenid:xxxx, user:xxxx, etc..."
                     />
                 </div>
                 <BanForm

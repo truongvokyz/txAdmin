@@ -83,10 +83,10 @@ export default async (dbo) => {
                 && (!action.revocation.timestamp)
                 && action.identifiers.length
                 && typeof action.identifiers[0] === 'string'
-                && action.identifiers[0].startsWith('license:')
+                && action.identifiers[0].startsWith('user:')
             ) {
-                const license = action.identifiers[0].substring(8);
-                whitelists.set(license, action.timestamp);
+                const user = action.identifiers[0].substring(8);
+                whitelists.set(user, action.timestamp);
             }
             return false;
         });
@@ -104,10 +104,10 @@ export default async (dbo) => {
             player.displayName = displayName;
             player.pureName = pureName;
             player.name = undefined;
-            player.ids = [`license:${player.license}`];
+            player.ids = [`user:${player.user}`];
 
             //adding whitelist
-            const tsWhitelisted = whitelists.get(player.license);
+            const tsWhitelisted = whitelists.get(player.user);
             if (tsWhitelisted) player.tsWhitelisted = tsWhitelisted;
 
             //removing empty notes

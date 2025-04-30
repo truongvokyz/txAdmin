@@ -151,7 +151,7 @@ export default function ServerStatus() {
             whitelistDesc = 'Only Discord server members with the specified roles can join.';
         } else if (globalStatus.server.whitelist === 'approvedLicense') {
             whitelistText = 'LICENSE';
-            whitelistDesc = 'Only players with an approved license can join.';
+            whitelistDesc = 'Only players with an approved user can join.';
         }
 
         //Bot status - too long to show all the text, so just show the code

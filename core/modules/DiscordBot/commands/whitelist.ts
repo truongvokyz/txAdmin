@@ -65,7 +65,7 @@ const handleRequestSubcommand = async (interaction: ChatInputCommandInteraction,
     const req = requests[0]; //just getting the first
 
     //Register whitelistApprovals
-    const identifier = `license:${req.license}`;
+    const identifier = `user:${req.user}`;
     const playerName = req.discordTag ?? req.playerDisplayName;
     try {
         txCore.database.whitelist.registerApproval({
@@ -79,7 +79,7 @@ const handleRequestSubcommand = async (interaction: ChatInputCommandInteraction,
             action: 'approved',
             playerName,
             requestId: req.id,
-            license: req.license,
+            user: req.user,
             adminName,
         });
     } catch (error) {

@@ -21,7 +21,7 @@ export type PlayerModalPlayerData = {
     isConnected: boolean;
     ids: string[]; //can be empty
     hwids: string[]; //can be empty
-    license: string | null;
+    user: string | null;
     actionHistory: PlayerHistoryItem[]; //can be empty
 
     //only if server player
@@ -74,16 +74,16 @@ export type PlayersTableReqType = {
     search: PlayersTableSearchType;
     filters: PlayersTableFiltersType;
     sorting: PlayersTableSortingType;
-    //NOTE: the query needs to be offset.param inclusive, but ignore offset.license
+    //NOTE: the query needs to be offset.param inclusive, but ignore offset.user
     // therefore, optimistically always limit to x + 1
     offset?: {
         param: number;
-        license: string;
+        user: string;
     }
 };
 
 export type PlayersTablePlayerType = {
-    license: string;
+    user: string;
     displayName: string;
     playTime: number;
     tsJoined: number;

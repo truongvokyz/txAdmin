@@ -150,7 +150,7 @@ async function handleRequests(ctx: AuthedCtx, action: any): Promise<GenericApiRe
 
         //Register whitelistApprovals
         const playerName = req.discordTag ?? req.playerDisplayName;
-        const identifier = `license:${req.license}`;
+        const identifier = `user:${req.user}`;
         try {
             txCore.database.whitelist.registerApproval({
                 identifier,
@@ -163,7 +163,7 @@ async function handleRequests(ctx: AuthedCtx, action: any): Promise<GenericApiRe
                 action: 'approved',
                 playerName,
                 requestId: req.id,
-                license: req.license,
+                user: req.user,
                 adminName: ctx.admin.name,
             });
         } catch (error) {
@@ -190,7 +190,7 @@ async function handleRequests(ctx: AuthedCtx, action: any): Promise<GenericApiRe
                     action: 'denied',
                     playerName: req.playerDisplayName,
                     requestId: req.id,
-                    license: req.license,
+                    user: req.user,
                     adminName: ctx.admin.name,
                 });
             }

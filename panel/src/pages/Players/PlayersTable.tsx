@@ -21,7 +21,7 @@ type PlayerRowProps = {
 
 function PlayerRow({ rowData, modalOpener }: PlayerRowProps) {
     const openModal = () => {
-        modalOpener({ license: rowData.license });
+        modalOpener({ user: rowData.user });
     }
 
     return (
@@ -178,7 +178,7 @@ export default function PlayersTable({ search, filters }: PlayersTableProps) {
             }
             if (!resetOffset && players.length) {
                 queryParams.offsetParam = players[players.length - 1][sorting.key];
-                queryParams.offsetLicense = players[players.length - 1].license;
+                queryParams.offsetLicense = players[players.length - 1].user;
             }
             const resp = await playerListingApi({ queryParams });
 

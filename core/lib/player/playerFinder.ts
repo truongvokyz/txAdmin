@@ -11,5 +11,5 @@ export const findPlayersByIdentifier = (identifier: string): DatabasePlayer[] =>
     const filter = (player: DatabasePlayerType) => player.ids.includes(identifier);
     const playersData = txCore.database.players.findMany(filter);
 
-    return playersData.map((dbData) => new DatabasePlayer(dbData.license, dbData))
+    return playersData.map((dbData) => new DatabasePlayer(dbData.user, dbData))
 } 

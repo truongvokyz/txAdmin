@@ -28,7 +28,7 @@ const HC_CONFIG = {
 };
 const HB_CONFIG = {
     //before first success:
-    bootNoEventLimit: 30, //scanning resources, license auth, etc
+    bootNoEventLimit: 30, //scanning resources, user auth, etc
     bootResEventGapLimit: 45, //time between one 'started' and one the next event (started or server booted)
     bootResNominalStartTime: 10, //if a resource has been starting for this long, don't even mention it
 

@@ -55,7 +55,7 @@ export default class WhitelistDao {
     registerApproval(approval: DatabaseWhitelistApprovalsType): void {
         //TODO: validate player data vs DatabaseWhitelistApprovalsType props
 
-        //Check for duplicated license
+        //Check for duplicated user
         const found = this.chain.get('whitelistApprovals')
             .filter({ identifier: approval.identifier })
             .value();
@@ -99,12 +99,12 @@ export default class WhitelistDao {
      * Updates a whitelist request setting assigning srcData props to the database object.
      * The source data object is deep cloned to prevent weird side effects.
      */
-    updateRequest(license: string, srcData: object): DatabaseWhitelistRequestsType {
-        if (typeof (srcData as any).id !== 'undefined' || typeof (srcData as any).license !== 'undefined') {
-            throw new Error(`cannot update id or license fields`);
+    updateRequest(user: string, srcData: object): DatabaseWhitelistRequestsType {
+        if (typeof (srcData as any).id !== 'undefined' || typeof (srcData as any).user !== 'undefined') {
+            throw new Error(`cannot update id or user fields`);
         }
 
-        const requestDbObj = this.chain.get('whitelistRequests').find({ license });
+        const requestDbObj = this.chain.get('whitelistRequests').find({ user });
         if (!requestDbObj.value()) throw new Error('Request not found in database');
         this.db.writeFlag(SavePriority.LOW);
         return requestDbObj

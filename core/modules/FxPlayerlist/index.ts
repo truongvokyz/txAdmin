@@ -22,10 +22,10 @@ export type PlayerDropEvent = {
  * Module that holds the server playerlist to mirrors FXServer's internal playerlist state, as well as recently
  * disconnected players' licenses for quick searches. This also handles the playerJoining and playerDropped events.
  * 
- * NOTE: licenseCache will keep an array of ['mutex#id', license], to be used for searches from server log clicks.
+ * NOTE: licenseCache will keep an array of ['mutex#id', user], to be used for searches from server log clicks.
  * The licenseCache will contain only the licenses from last 50k disconnected players, which should be one entire
  *  session for the q99.9 servers out there and weight around 4mb.
- * The idea is: all players with license will be in the database, so storing only license is enough to find them.
+ * The idea is: all players with user will be in the database, so storing only user is enough to find them.
  * 
  * NOTE: #playerlist keeps all players in this session, a heap snapshot revealed that an 
  *  average player (no actions) will weight about 520 bytes, and the q9999 of max netid is ~22k, 
@@ -34,8 +34,8 @@ export type PlayerDropEvent = {
  */
 export default class FxPlayerlist {
     #playerlist: (ServerPlayer | undefined)[] = [];
-    licenseCache: [mutexid: string, license: string][] = [];
-    licenseCacheLimit = 50_000; //mutex+id+license * 50_000 = ~4mb
+    licenseCache: [mutexid: string, user: string][] = [];
+    licenseCacheLimit = 50_000; //mutex+id+user * 50_000 = ~4mb
     joinLeaveLog: [ts: number, isJoin: boolean][] = [];
     joinLeaveLogLimitTime = 30 * 60 * 1000; //30 mins, [ts+isJoin] * 100_000 = ~4.3mb
 
@@ -76,8 +76,8 @@ export default class FxPlayerlist {
         for (const player of this.#playerlist) {
             if (player) {
                 player.disconnect();
-                if (player.license) {
-                    this.licenseCache.push([`${oldMutex}#${player.netid}`, player.license]);
+                if (player.user) {
+                    this.licenseCache.push([`${oldMutex}#${player.netid}`, player.user]);
                 }
             }
         }
@@ -93,7 +93,7 @@ export default class FxPlayerlist {
 
 
     /**
-     * To guarantee multiple instances of the same player license have their dbData synchronized,
+     * To guarantee multiple instances of the same player user have their dbData synchronized,
      * this function (called by database.players.update) goes through every matching player 
      * (except the source itself) to update their dbData.
      */
@@ -102,7 +102,7 @@ export default class FxPlayerlist {
             if (
                 player instanceof ServerPlayer
                 && player.isRegistered
-                && player.license === dbData.license
+                && player.user === dbData.user
                 && player.uniqueId !== srcUniqueId
             ) {
                 player.syncUpstreamDbData(dbData);
@@ -124,7 +124,7 @@ export default class FxPlayerlist {
                     displayName: p!.displayName,
                     pureName: p!.pureName,
                     ids: p!.ids,
-                    license: p!.license,
+                    user: p!.user,
                 });
             });
     }
@@ -142,14 +142,14 @@ export default class FxPlayerlist {
      * NOTE: this returns the actual object and not a deep clone!
      */
     getOnlinePlayersByLicense(searchLicense: string) {
-        return this.#playerlist.filter(p => p && p.license === searchLicense && p.isConnected) as ServerPlayer[];
+        return this.#playerlist.filter(p => p && p.user === searchLicense && p.isConnected) as ServerPlayer[];
     }
 
     /**
      * Returns a set of all online players' licenses.
      */
     getOnlinePlayersLicenses() {
-        return new Set(this.#playerlist.filter(p => p && p.isConnected).map(p => p!.license));
+        return new Set(this.#playerlist.filter(p => p && p.isConnected).map(p => p!.user));
     }
 
     /**
@@ -197,7 +197,7 @@ export default class FxPlayerlist {
                     displayName: svPlayer.displayName,
                     pureName: svPlayer.pureName,
                     ids: svPlayer.ids,
-                    license: svPlayer.license,
+                    user: svPlayer.user,
                 });
             } catch (error) {
                 console.verbose.warn(`playerJoining event error: ${(error as Error).message}`);

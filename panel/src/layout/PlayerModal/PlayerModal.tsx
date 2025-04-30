@@ -72,9 +72,9 @@ export default function PlayerModal() {
                 } else {
                     setModalData(resp);
                     setTsFetch(Math.round(Date.now() / 1000));
-                    //Update the ref param to use a license, if possible
-                    if (!('license' in playerRef) && resp.player.license) {
-                        setPlayerModalUrlParam(resp.player.license)
+                    //Update the ref param to use a user, if possible
+                    if (!('user' in playerRef) && resp.player.user) {
+                        setPlayerModalUrlParam(resp.player.user)
                     }
                 }
             },

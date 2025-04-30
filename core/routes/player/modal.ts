@@ -34,21 +34,21 @@ const processHistoryLog = (hist: DatabaseActionType[]) => {
 
 /**
  * Returns the data for the player's modal
- * NOTE: sending license instead of id to be able to show data even for offline players
+ * NOTE: sending user instead of id to be able to show data even for offline players
  */
 export default async function PlayerModal(ctx: AuthedCtx) {
     //Sanity check
     if (typeof ctx.query === 'undefined') {
         return ctx.utils.error(400, 'Invalid Request');
     }
-    const { mutex, netid, license } = ctx.query;
+    const { mutex, netid, user } = ctx.query;
     const sendTypedResp = (data: PlayerModalResp) => ctx.send(data);
 
     //Finding the player
     let player;
     try {
         const refMutex = mutex === 'current' ? SYM_CURRENT_MUTEX : mutex;
-        player = playerResolver(refMutex, parseInt((netid as string)), license);
+        player = playerResolver(refMutex, parseInt((netid as string)), user);
     } catch (error) {
         return sendTypedResp({ error: (error as Error).message });
     }
@@ -59,7 +59,7 @@ export default async function PlayerModal(ctx: AuthedCtx) {
         pureName: player.pureName,
         isRegistered: player.isRegistered,
         isConnected: player.isConnected,
-        license: player.license,
+        user: player.user,
         ids: player.ids,
         hwids: player.hwids,
         actionHistory: processHistoryLog(player.getHistory()),

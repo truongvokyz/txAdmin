@@ -91,11 +91,11 @@ export default function ActionInfoTab({ action, serverTime, tsFetch }: ActionInf
     const playerDisplayName = action.playerName !== false
         ? <span>{action.playerName}</span>
         : <span className="italic opacity-75">unknown player</span>;
-    const targetLicenses = action.ids.filter(id => id.startsWith('license:'));
+    const targetLicenses = action.ids.filter(id => id.startsWith('user:'));
     const linkedPlayer = targetLicenses.length === 1 ? targetLicenses[0].split(':')[1] : false;
     const handleViewPlayerClick = () => {
         if (!linkedPlayer) return;
-        openPlayerModal({ license: linkedPlayer });
+        openPlayerModal({ user: linkedPlayer });
     }
 
     return <div className="px-1 mb-1 md:mb-4">

@@ -72,7 +72,7 @@ export type PlayerlistPlayerType = {
     displayName: string,
     pureName: string,
     ids: string[],
-    license: string | null,
+    user: string | null,
 }
 
 export type PlayerDroppedEventType = {

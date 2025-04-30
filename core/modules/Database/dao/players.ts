@@ -24,16 +24,16 @@ export default class PlayersDao {
 
 
     /**
-     * Searches for a player in the database by the license, returns null if not found or false in case of error
+     * Searches for a player in the database by the user, returns null if not found or false in case of error
      */
-    findOne(license: string): DatabasePlayerType | null {
-        if (!/[0-9A-Fa-f]{40}/.test(license)) {
+    findOne(user: string): DatabasePlayerType | null {
+        if (!/[0-9A-Fa-f]{40}/.test(user)) {
             throw new Error('Invalid reference type');
         }
 
         //Performing search
         const p = this.chain.get('players')
-            .find({ license })
+            .find({ user })
             .cloneDeep()
             .value();
         return (typeof p === 'undefined') ? null : p;
@@ -57,11 +57,11 @@ export default class PlayersDao {
     register(player: DatabasePlayerType): void {
         //TODO: validate player data vs DatabasePlayerType props
 
-        //Check for duplicated license
+        //Check for duplicated user
         const found = this.chain.get('players')
-            .filter({ license: player.license })
+            .filter({ user: player.user })
             .value();
-        if (found.length) throw new DuplicateKeyError(`this license is already registered`);
+        if (found.length) throw new DuplicateKeyError(`this user is already registered`);
 
         this.db.writeFlag(SavePriority.LOW);
         this.chain.get('players')
@@ -74,12 +74,12 @@ export default class PlayersDao {
      * Updates a player setting assigning srcData props to the database player.
      * The source data object is deep cloned to prevent weird side effects.
      */
-    update(license: string, srcData: object, srcUniqueId: Symbol): DatabasePlayerType {
-        if (typeof (srcData as any).license !== 'undefined') {
-            throw new Error(`cannot license field`);
+    update(user: string, srcData: object, srcUniqueId: Symbol): DatabasePlayerType {
+        if (typeof (srcData as any).user !== 'undefined') {
+            throw new Error(`cannot user field`);
         }
 
-        const playerDbObj = this.chain.get('players').find({ license });
+        const playerDbObj = this.chain.get('players').find({ user });
         if (!playerDbObj.value()) throw new Error('Player not found in database');
         this.db.writeFlag(SavePriority.LOW);
         const newData = playerDbObj

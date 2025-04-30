@@ -1,5 +1,5 @@
 export type DatabasePlayerType = {
-    license: string;
+    user: string;
     ids: string[];
     hwids: string[];
     displayName: string;
@@ -43,7 +43,7 @@ export type DatabaseActionType = DatabaseActionBanType | DatabaseActionWarnType;
 
 export type DatabaseWhitelistApprovalsType = {
     identifier: string;
-    playerName: string; //always filled, even with `unknown` or license `xxxxxx...xxxxxx` 
+    playerName: string; //always filled, even with `unknown` or user `xxxxxx...xxxxxx` 
     playerAvatar: string | null,
     tsApproved: number,
     approvedBy: string
@@ -51,7 +51,7 @@ export type DatabaseWhitelistApprovalsType = {
 
 export type DatabaseWhitelistRequestsType = {
     id: string, //R####
-    license: string,
+    user: string,
     playerDisplayName: string,
     playerPureName: string,
     discordTag?: string,

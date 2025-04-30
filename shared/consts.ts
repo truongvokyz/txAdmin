@@ -5,26 +5,20 @@ const regexDiscordSnowflake = /^\d{17,20}$/;
 
 export default {
     //Identifier stuff
-    regexValidHwidToken: /^[0-9A-Fa-f]{1,2}:[0-9A-Fa-f]{64}$/,
+    // regexValidHwidToken: /^[0-9A-Fa-f]{1,2}:[0-9A-Fa-f]{64}$/,
+    regexValidHwidToken: /^[0-9A-Fa-f]{1,2}:[0-9A-Fa-f\-:]+$/,
+
     validIdentifiers: {
         // https://github.com/discordjs/discord.js/pull/9144
         // validated in txtracker dataset
         discord: /^discord:\d{17,20}$/,
-        fivem: /^fivem:\d{1,8}$/,
-        license: /^license:[0-9A-Fa-f]{40}$/,
-        license2: /^license2:[0-9A-Fa-f]{40}$/,
-        live: /^live:\d{14,20}$/,
-        steam: /^steam:1100001[0-9A-Fa-f]{8}$/,
-        xbl: /^xbl:\d{14,20}$/,
+        citizenid: /^citizenid:[a-zA-Z0-9]{1,18}$/,
+        user: /^user:[a-zA-Z0-9]{1,30}$/,
     },
     validIdentifierParts: {
         discord: regexDiscordSnowflake,
-        fivem: /^\d{1,8}$/,
-        license: /^[0-9A-Fa-f]{40}$/,
-        license2: /^[0-9A-Fa-f]{40}$/,
-        live: /^\d{14,20}$/,
-        steam: /^1100001[0-9A-Fa-f]{8}$/,
-        xbl: /^\d{14,20}$/,
+        citizenid: /^[a-zA-Z0-9]{1,18}$/,
+        user: /^[a-zA-Z0-9]{1,30}$/,
     },
 
     // Database stuff

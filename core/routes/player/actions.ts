@@ -19,14 +19,14 @@ export default async function PlayerActions(ctx: AuthedCtx) {
         return ctx.utils.error(400, 'Invalid Request');
     }
     const action = ctx.params.action;
-    const { mutex, netid, license } = ctx.query;
+    const { mutex, netid, user } = ctx.query;
     const sendTypedResp = (data: GenericApiResp) => ctx.send(data);
 
     //Finding the player
     let player;
     try {
         const refMutex = mutex === 'current' ? SYM_CURRENT_MUTEX : mutex;
-        player = playerResolver(refMutex, parseInt((netid as string)), license);
+        player = playerResolver(refMutex, parseInt((netid as string)), user);
     } catch (error) {
         return sendTypedResp({ error: (error as Error).message });
     }
@@ -65,7 +65,7 @@ async function handleSaveNote(ctx: AuthedCtx, player: PlayerClass): Promise<Gene
 
     try {
         player.setNote(note, ctx.admin.name);
-        ctx.admin.logAction(`Set notes for ${player.license}`);
+        ctx.admin.logAction(`Set notes for ${player.user}`);
         return { success: true };
     } catch (error) {
         return { error: `Failed to save note: ${(error as Error).message}` };
@@ -250,15 +250,15 @@ async function handleSetWhitelist(ctx: AuthedCtx, player: PlayerClass): Promise<
     try {
         player.setWhitelist(status);
         if (status) {
-            ctx.admin.logAction(`Added ${player.license} to the whitelist.`);
+            ctx.admin.logAction(`Added ${player.user} to the whitelist.`);
         } else {
-            ctx.admin.logAction(`Removed ${player.license} from the whitelist.`);
+            ctx.admin.logAction(`Removed ${player.user} from the whitelist.`);
         }
 
         // Dispatch `txAdmin:events:whitelistPlayer`
         txCore.fxRunner.sendEvent('whitelistPlayer', {
             action: status ? 'added' : 'removed',
-            license: player.license,
+            user: player.user,
             playerName: player.displayName,
             adminName: ctx.admin.name,
         });

@@ -43,9 +43,9 @@ export const MockedPlayerDetails: PlayerModalSuccess = {
         "pureName": "tabby",
         "isRegistered": true,
         "isConnected": true,
-        "license": "9b9fc300cc65d22ad3b536175a4d15c0e4933753",
+        "user": "9b9fc300cc65d22ad3b536175a4d15c0e4933753",
         "ids": [
-            "license:9b9fc300cc65d22ad3b536175a4d15c0e4933753"
+            "user:9b9fc300cc65d22ad3b536175a4d15c0e4933753"
         ],
         "hwids": [
             "9:0000000000000000000000000000000000000000000000000000000000000005",
@@ -322,7 +322,7 @@ export const MockedPlayerDetails: PlayerModalSuccess = {
         "playTime": 4706,
         "tsWhitelisted": 1667314521,
         "oldIds": [
-            "license:9b9fc300cc65d22ad3b536175a4d15c0e4933753",
+            "user:9b9fc300cc65d22ad3b536175a4d15c0e4933753",
             "fivem:271816",
             "discord:272800190639898628"
         ],

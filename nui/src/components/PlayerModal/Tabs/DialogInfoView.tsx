@@ -147,7 +147,7 @@ const DialogInfoView: React.FC = () => {
           color={player.tsWhitelisted ? "error" : "success"}
           variant="outlined"
           onClick={btnChangeWhitelistStatus as any}
-          disabled={!userHasPerm('players.whitelist', userPerms) || !player.license}
+          disabled={!userHasPerm('players.whitelist', userPerms) || !player.user}
         >
           {player.tsWhitelisted
             ? t("nui_menu.player_modal.info.btn_wl_remove")

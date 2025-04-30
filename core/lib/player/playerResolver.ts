@@ -3,14 +3,14 @@ import { DatabasePlayer, ServerPlayer } from "./playerClasses.js"
 
 
 /**
- * Resolves a ServerPlayer or DatabasePlayer based on mutex, netid and license.
- * When mutex#netid is present, it takes precedence over license.
- * If the mutex is not from the current server, search for the license in FxPlayerlist.licenseCache[]
- * and then search for the license in the database.
+ * Resolves a ServerPlayer or DatabasePlayer based on mutex, netid and user.
+ * When mutex#netid is present, it takes precedence over user.
+ * If the mutex is not from the current server, search for the user in FxPlayerlist.licenseCache[]
+ * and then search for the user in the database.
  */
-export default (mutex: any, netid: any, license: any) => {
+export default (mutex: any, netid: any, user: any) => {
     const parsedNetid = parseInt(netid);
-    let searchLicense = license;
+    let searchLicense = user;
 
     //For error clarification only
     let hasMutex = false;
@@ -35,14 +35,14 @@ export default (mutex: any, netid: any, license: any) => {
                 throw new Error(`player not found in current server playerlist`);
             }
         } else {
-            // If mutex is from previous server, overwrite any given license
+            // If mutex is from previous server, overwrite any given user
             const searchRef = `${mutex}#${netid}`;
             const found = txCore.fxPlayerlist.licenseCache.find(c => c[0] === searchRef);
             if (found) searchLicense = found[1];
         }
     }
 
-    //If license provided or resolved through licenseCache, search in the database
+    //If user provided or resolved through licenseCache, search in the database
     if (typeof searchLicense === 'string' && searchLicense.length) {
         const onlineMatches = txCore.fxPlayerlist.getOnlinePlayersByLicense(searchLicense);
         if(onlineMatches.length){

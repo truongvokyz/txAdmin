@@ -10,7 +10,7 @@ export type PlayerModalRefType = {
     mutex: string;
     netid: number;
 } | {
-    license: string;
+    user: string;
 };
 export const playerModalOpenAtom = atomWithReset(false);
 export const playerModalRefAtom = atomWithReset<PlayerModalRefType | undefined>(undefined);
@@ -28,7 +28,7 @@ export const useOpenPlayerModal = () => {
     return (data: Exclude<PlayerModalRefType, undefined>) => {
         const newRef = 'mutex' in data
             ? `${data.mutex}#${data.netid}`
-            : data.license;
+            : data.user;
         setPlayerModalUrlParam(newRef);
         setModalRef(data);
         setModalOpen(true);

@@ -61,7 +61,7 @@ export default function MainShell() {
                     return openPlayerModal({ mutex, netid });
                 }
             } else if (playerModalRef.length) {
-                return openPlayerModal({ license: playerModalRef });
+                return openPlayerModal({ user: playerModalRef });
             }
         } else if (actionModalRef && actionModalRef.length) {
             return openActionModal(actionModalRef);

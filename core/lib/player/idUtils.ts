@@ -22,19 +22,15 @@ export const parsePlayerId = (idString: string) => {
 
 
 /**
- * Get valid, invalid and license identifier from array of ids
+ * Get valid, invalid and user identifier from array of ids
  */
 export const parsePlayerIds = (ids: string[]) => {
     let invalidIdsArray: string[] = [];
     let validIdsArray: string[] = [];
     const validIdsObject: PlayerIdsObjectType = {
         discord: null,
-        fivem: null,
-        license: null,
-        license2: null,
-        live: null,
-        steam: null,
-        xbl: null,
+        citizenid: null,
+        user: null,
     }
 
     for (const idString of ids) {
@@ -75,7 +71,7 @@ export const filterPlayerHwids = (hwids: string[]) => {
 /**
  * Attempts to parse a user-provided string into an array of valid identifiers.
  * This function is lenient and will attempt to parse any string into an array of valid identifiers.
- * For non-prefixed ids, it will attempt to parse it as discord, fivem, steam, or license.
+ * For non-prefixed ids, it will attempt to parse it as discord, fivem, steam, or user.
  * Returns an array of valid ids/hwids, and array of invalid identifiers.
  * 
  * Stricter version of this function is parsePlayerIds
@@ -106,12 +102,10 @@ export const parseLaxIdsArrayInput = (fullInput: string) => {
             }
         } else if (consts.validIdentifierParts.discord.test(input)) {
             validIds.push(`discord:${input}`);
-        } else if (consts.validIdentifierParts.fivem.test(input)) {
-            validIds.push(`fivem:${input}`);
-        } else if (consts.validIdentifierParts.license.test(input)) {
-            validIds.push(`license:${input}`);
-        } else if (consts.validIdentifierParts.steam.test(input)) {
-            validIds.push(`steam:${input}`);
+        } else if (consts.validIdentifierParts.citizenid.test(input)) {
+            validIds.push(`citizenid:${input}`);
+        } else if (consts.validIdentifierParts.user.test(input)) {
+            validIds.push(`user:${input}`);
         } else {
             invalids.push(input);
         }
@@ -129,7 +123,7 @@ export const getIdFromOauthNameid = (nameid: string) => {
     try {
         const res = /\/user\/(\d{1,8})/.exec(nameid);
         //@ts-expect-error
-        return `fivem:${res[1]}`;
+        return `user:${res[1]}`;
     } catch (error) {
         return false;
     }

@@ -18,7 +18,7 @@ export default function PlayerIdsTab({ player, refreshModalData }: PlayerIdsTabP
     //     // refreshModalData();
     //     console.log('Wiping IDs...');
     //     txToast.success('IDs wiped successfully.');
-    //     setIds((player?.oldIds ?? []).filter((id) => id.startsWith('license:')));
+    //     setIds((player?.oldIds ?? []).filter((id) => id.startsWith('user:')));
     // }
     // const onWipeHwids = () => {
     //     //TODO: Implement the wipe IDs logic

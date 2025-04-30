@@ -71,7 +71,7 @@ export default async function PlayerSearch(ctx: AuthedCtx) {
         if (validRequestedFilters.size) {
             const playerFilterFunctions = {
                 'isAdmin': (p: DatabasePlayerType) => p.ids.some((id) => adminsIdentifiers.includes(id)),
-                'isOnline': (p: DatabasePlayerType) => onlinePlayersLicenses.has(p.license),
+                'isOnline': (p: DatabasePlayerType) => onlinePlayersLicenses.has(p.user),
                 'isWhitelisted': (p: DatabasePlayerType) => p.tsWhitelisted,
                 'hasNote': (p: DatabasePlayerType) => p.notes,
             };
@@ -94,7 +94,7 @@ export default async function PlayerSearch(ctx: AuthedCtx) {
             return sendTypedResp({ error: 'Invalid offsetParam or offsetLicense' });
         }
         chain = chain.takeRightWhile((p) => {
-            return p.license !== offsetLicense && parsedSortingDesc
+            return p.user !== offsetLicense && parsedSortingDesc
                 ? p[sortingKey as keyof DatabasePlayerType] as number <= parsedOffsetParam
                 : p[sortingKey as keyof DatabasePlayerType] as number >= parsedOffsetParam
         });
@@ -160,7 +160,7 @@ export default async function PlayerSearch(ctx: AuthedCtx) {
     const hasReachedEnd = players.length <= DEFAULT_LIMIT;
     const processedPlayers: PlayersTablePlayerType[] = players.slice(0, DEFAULT_LIMIT).map((p) => {
         return {
-            license: p.license,
+            user: p.user,
             displayName: p.displayName,
             playTime: p.playTime,
             tsJoined: p.tsJoined,
@@ -168,7 +168,7 @@ export default async function PlayerSearch(ctx: AuthedCtx) {
             notes: p.notes ? p.notes.text : undefined,
 
             isAdmin: p.ids.some((id) => adminsIdentifiers.includes(id)),
-            isOnline: onlinePlayersLicenses.has(p.license),
+            isOnline: onlinePlayersLicenses.has(p.user),
             isWhitelisted: p.tsWhitelisted ? true : false,
             // isBanned: boolean,
             // warnCount: number,
